@@ -1,0 +1,28 @@
+{
+  "name": "sfu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "sfu — stateless Slack user-token minting service",
+  "license": "MIT",
+  "author": "William Duyck",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "test": "tsx --test 'src/**/*.test.ts'"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@slack/web-api": "^7.8.0",
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

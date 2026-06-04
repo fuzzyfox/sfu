@@ -1,6 +1,19 @@
+# Node
 node_modules/
+dist/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Env & secrets
 .env
 .env.*
-dist/
-*.log
+
+# Editors / OS
+.idea/
+.vscode/
 .DS_Store
+*.log
