@@ -1,0 +1,15 @@
+{
+  "healthchecks": {
+    "web": [
+      {
+        "type": "startup",
+        "name": "landing route",
+        "description": "GET / returns the sfu landing response",
+        "path": "/",
+        "content": "sfu",
+        "attempts": 6,
+        "wait": 5
+      }
+    ]
+  }
+}
