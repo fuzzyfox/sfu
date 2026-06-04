@@ -63,8 +63,13 @@ the token is minted, exactly like `wmgid` surfaces your claim and steps aside.
 5. As an agent, I want to start the OAuth flow, capture the returned token, and
    store it locally without further user involvement, so that the user is not
    asked to copy and paste a live credential.
-6. As an agent, I want to upload a file to a specified Slack conversation as the
-   user, so that the file appears in the same thread as the user's own messages.
+6. As an agent, I want to upload a file with no conversation and get back its id
+   and permalink (handle-only upload), so that I can place the file myself via my
+   own MCP calls — e.g. embedding it in a canvas where there is no conversation to
+   post into.
+6a. As an agent, I want to optionally upload a file directly into a specified
+   conversation as the user (direct upload), so that the file is posted into that
+   thread in one step when I do have a target.
 7. As an agent, I want the upload to return the file id and permalink, so that I
    can reference or embed the uploaded file afterwards.
 8. As a user, I want the uploaded file attributed to me rather than to a bot, so
@@ -115,11 +120,20 @@ the token is minted, exactly like `wmgid` surfaces your claim and steps aside.
 friction at build time). The service and skill are decoupled; the only contract
 between them is the OAuth handback shape and the token storage convention.
 
-**Attribution model.** Uploads use the individual user's `xoxp-` token so files
-appear as the user, in the target conversation. No bot path in v1. Scope requested
-is **`files:write` only** — the Slack MCP already posts messages as the user, so
-`chat:write` is not needed; `files_upload_v2` with a `channel` argument lands the
-file as a message in the conversation, which is all that cohesion requires.
+**Attribution model.** Uploads use the individual user's `xoxp-` token so files are
+owned by, and appear as, the user. No bot path in v1.
+
+**Upload shapes.** `slack-upload` supports two shapes, both needing only
+`files:write`: a **handle-only upload** (no conversation) that creates a user-owned
+file and returns `{ id, permalink }` for the agent to place via its own MCP calls
+(required for the canvas-embed case, which has no conversation to post into); and a
+**direct upload** (optional conversation argument) that posts the file into that
+conversation as the user in one step. The agent chooses per situation.
+
+**Scope.** **`files:write` only** for both upload shapes. Sharing a file into a
+conversation happens through `files.completeUploadExternal` (a `files.*` method), not
+`chat.postMessage`, so `chat:write` is not needed; the Slack MCP already posts text
+messages as the user where required.
 
 **Statefulness boundary.** The service is a **token-minting utility only**. It is
 never in the file-transfer path, holds no database, and does not persist tokens.
@@ -190,7 +204,8 @@ Skill (Python or Bash):
 8. Token validity check — `auth.test` probe to decide mint-vs-reuse.
 9. Login orchestration — port selection, nonce, localhost listener, open `/auth`,
    capture token, hand to the token store.
-10. Uploader — `files_upload_v2` wrapper returning `{ id, permalink }`.
+10. Uploader — `files_upload_v2` wrapper returning `{ id, permalink }`. Optional
+    conversation argument selects handle-only vs direct upload.
 11. `SKILL.md` — codifies the cold-start process: detect token → guide
     install/auth → mint → store → upload.
 
