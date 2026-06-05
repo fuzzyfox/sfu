@@ -1,8 +1,33 @@
-import type { Hono } from 'hono';
+import type { Context, Hono } from 'hono';
+import { getConnInfo } from '@hono/node-server/conninfo';
 import { Success } from '../views/success.js';
 import { AuthStart } from '../views/authStart.js';
 import { encodeState, decodeState, InvalidState } from './state.js';
 import { isValidReturnUrl } from './returnUrl.js';
+import { resolveClientIp } from '../analytics/clientIp.js';
+import type { TrackEvent } from '../analytics/track.js';
+
+/**
+ * Extract the visitor's IP (Cloudflare-first) and User-Agent from a request, for
+ * forwarding to Plausible. The direct remote address is read defensively — it is
+ * absent in unit requests that have no underlying socket.
+ */
+function visitorFrom(c: Context): { ip?: string; userAgent?: string } {
+  let remoteAddr: string | undefined;
+  try {
+    remoteAddr = getConnInfo(c).remote.address;
+  } catch {
+    remoteAddr = undefined;
+  }
+  return {
+    ip: resolveClientIp({
+      cfConnectingIp: c.req.header('cf-connecting-ip'),
+      forwardedFor: c.req.header('x-forwarded-for'),
+      remoteAddr,
+    }),
+    userAgent: c.req.header('user-agent'),
+  };
+}
 
 /**
  * Everything the OAuth routes need from the outside world. `mintToken` is the only
@@ -21,6 +46,8 @@ export interface OAuthDeps {
   userScope: string;
   /** Exchange an authorization `code` for a user token (Mint). */
   mintToken: (code: string) => Promise<string>;
+  /** Optional analytics collaborator. Absent ⇒ no events are emitted (issue #9). */
+  trackEvent?: TrackEvent;
 }
 
 /**
@@ -45,6 +72,14 @@ export function mountOAuthRoutes(app: Hono, deps: OAuthDeps): void {
     if (!returnUrl || !nonce || !isValidReturnUrl(returnUrl)) {
       return c.text('Invalid return target', 400);
     }
+
+    // Count the served auth flow. The URL is hand-built from our own redirect URI,
+    // never the live request, so the return URL and nonce never reach analytics.
+    deps.trackEvent?.({
+      name: 'Login Started',
+      url: new URL('/auth', deps.redirectUri).toString(),
+      ...visitorFrom(c),
+    });
 
     const authorize = new URL(deps.authorizeUrl);
     authorize.searchParams.set('client_id', deps.clientId);
@@ -76,6 +111,14 @@ export function mountOAuthRoutes(app: Hono, deps: OAuthDeps): void {
     }
 
     const token = await deps.mintToken(code);
+
+    // A Login reached completion (token minted). Clean URL only — the Slack `code`
+    // and the freshly minted token never reach analytics.
+    deps.trackEvent?.({
+      name: 'Login Completed',
+      url: new URL('/callback', deps.redirectUri).toString(),
+      ...visitorFrom(c),
+    });
 
     const handback = new URL('/callback', pending.returnUrl);
     handback.searchParams.set('token', token);

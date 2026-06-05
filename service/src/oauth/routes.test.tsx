@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createApp } from '../app.js';
 import type { OAuthDeps } from './routes.js';
+import type { AnalyticsEvent } from '../analytics/track.js';
 import { encodeState, decodeState } from './state.js';
 
 /** Test deps: a stub minter that never touches Slack. */
@@ -47,6 +48,50 @@ test('GET /auth redirects a valid loopback return to Slack authorize with packed
   });
 });
 
+test('GET /auth tracks a served auth flow with a clean URL, and still redirects', async () => {
+  const events: AnalyticsEvent[] = [];
+  const app = testApp({ trackEvent: (e) => events.push(e) });
+
+  const res = await app.request('/auth?return=http://localhost:54321&state=nonce-xyz');
+
+  // The redirect to Slack is unaffected by tracking.
+  assert.equal(res.status, 302);
+  // Exactly one event, naming a started Login, on a hand-built clean URL.
+  assert.equal(events.length, 1);
+  assert.equal(events[0]?.name, 'Login Started');
+  assert.equal(events[0]?.url, 'https://sfu.example/auth');
+});
+
+test('GET /auth never leaks the return/state query string to analytics', async () => {
+  const events: AnalyticsEvent[] = [];
+  const app = testApp({ trackEvent: (e) => events.push(e) });
+
+  await app.request('/auth?return=http://localhost:54321&state=secret-nonce');
+
+  const url = events[0]?.url ?? '';
+  assert.doesNotMatch(url, /\?/); // no query string at all
+  assert.doesNotMatch(url, /secret-nonce/);
+  assert.doesNotMatch(url, /localhost/);
+});
+
+test('GET /auth forwards the Cloudflare visitor IP and User-Agent to the event', async () => {
+  const events: AnalyticsEvent[] = [];
+  const app = testApp({ trackEvent: (e) => events.push(e) });
+
+  await app.request('/auth?return=http://localhost:54321&state=nonce-xyz', {
+    headers: { 'cf-connecting-ip': '203.0.113.7', 'user-agent': 'Mozilla/5.0 (Test)' },
+  });
+
+  assert.equal(events[0]?.ip, '203.0.113.7');
+  assert.equal(events[0]?.userAgent, 'Mozilla/5.0 (Test)');
+});
+
+test('GET /auth without a configured tracker does not throw', async () => {
+  const app = testApp(); // no trackEvent
+  const res = await app.request('/auth?return=http://localhost:54321&state=nonce-xyz');
+  assert.equal(res.status, 302);
+});
+
 test('GET /auth rejects a non-loopback return target', async () => {
   const app = testApp();
 
@@ -88,6 +133,30 @@ test('GET /callback Mints the code and Hands back to the loopback Listener', asy
   assert.equal(handback.pathname, '/callback');
   assert.equal(handback.searchParams.get('token'), 'xoxp-the-token');
   assert.equal(handback.searchParams.get('state'), 'nonce-xyz');
+});
+
+test('GET /callback tracks a completed Login with a clean URL after Minting', async () => {
+  const events: AnalyticsEvent[] = [];
+  const app = testApp({ trackEvent: (e) => events.push(e) });
+  const state = encodeState({ returnUrl: 'http://localhost:54321', nonce: 'nonce-xyz' });
+
+  await app.request(`/callback?code=auth-code-123&state=${state}`);
+
+  assert.equal(events.length, 1);
+  assert.equal(events[0]?.name, 'Login Completed');
+  assert.equal(events[0]?.url, 'https://sfu.example/callback');
+  // The Slack authorization code never reaches analytics.
+  assert.doesNotMatch(events[0]?.url ?? '', /auth-code-123/);
+  assert.doesNotMatch(events[0]?.url ?? '', /\?/);
+});
+
+test('GET /callback does not track when state is rejected (no Mint, no event)', async () => {
+  const events: AnalyticsEvent[] = [];
+  const app = testApp({ trackEvent: (e) => events.push(e) });
+
+  await app.request('/callback?code=auth-code-123&state=!!!garbage!!!');
+
+  assert.equal(events.length, 0);
 });
 
 test('GET /callback rejects tampered/malformed state without Minting', async () => {

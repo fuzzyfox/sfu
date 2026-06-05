@@ -1,5 +1,6 @@
 import type { FC } from 'hono/jsx';
 import { Layout } from './layout.js';
+import type { PlausibleConfig } from '../config.js';
 import { TAGLINE, NPX_INSTALL, agentSnippet } from '../content.js';
 
 /**
@@ -50,11 +51,19 @@ const SlackMark: FC<{ class?: string }> = ({ class: cls }) => (
  * `origin` is the scheme+host the request arrived on, so absolute links in the
  * Agent snippet point at whatever host served the page.
  */
-export const Home: FC<{ origin: string }> = ({ origin }) => {
+export const Home: FC<{ origin: string; plausible?: PlausibleConfig }> = ({
+  origin,
+  plausible,
+}) => {
   const snippet = agentSnippet(origin);
 
+  // The Plausible tagged-events script fires a custom event when an element with a
+  // `plausible-event-name=…` class is clicked. Tags are added only when analytics is
+  // configured, so the unconfigured page stays byte-identical (issue #9 AC2).
+  const evt = (name: string) => (plausible ? ` plausible-event-name=${name.replace(/ /g, '+')}` : '');
+
   return (
-    <Layout>
+    <Layout plausible={plausible}>
       <div x-data={copyHelper}>
         <header class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <div class="font-extrabold text-xl">sfu</div>
@@ -81,7 +90,7 @@ export const Home: FC<{ origin: string }> = ({ origin }) => {
               </span>
               <button
                 {...{ '@click': `copy(${JSON.stringify(NPX_INSTALL)}, 'npx')` }}
-                class="ml-auto shrink-0 text-xs text-slate-400 hover:text-white"
+                class={`ml-auto shrink-0 text-xs text-slate-400 hover:text-white${evt('Copy Install')}`}
               >
                 <span x-text="copied === 'npx' ? '✓ copied' : 'copy'">copy</span>
               </button>
@@ -89,7 +98,7 @@ export const Home: FC<{ origin: string }> = ({ origin }) => {
 
             <a
               href="/auth"
-              class="inline-flex items-center gap-2.5 bg-aubergine hover:bg-aubergine-light text-white font-semibold px-6 py-3 rounded-lg shadow-lg shadow-aubergine/30 transition"
+              class={`inline-flex items-center gap-2.5 bg-aubergine hover:bg-aubergine-light text-white font-semibold px-6 py-3 rounded-lg shadow-lg shadow-aubergine/30 transition${evt('Add to Slack')}`}
             >
               <SlackMark class="w-5 h-5" /> Add to Slack
             </a>
@@ -170,7 +179,7 @@ export const Home: FC<{ origin: string }> = ({ origin }) => {
             <pre class="text-sm whitespace-pre-wrap text-slate-600 leading-relaxed">{snippet}</pre>
             <button
               {...{ '@click': `copy(${JSON.stringify(snippet)}, 'snippet')` }}
-              class="mt-3 text-sm font-semibold text-slack-red hover:text-aubergine"
+              class={`mt-3 text-sm font-semibold text-slack-red hover:text-aubergine${evt('Copy Snippet')}`}
             >
               <span x-text="copied === 'snippet' ? '✓ copied' : 'copy snippet'">copy snippet</span>
             </button>
