@@ -24,10 +24,13 @@ test('GET / serves an HTML landing page explaining what sfu is', async () => {
   assert.match(body, /Upload files to Slack/i);
 });
 
-test('GET / offers an Add to Slack affordance that starts authorization at /auth', async () => {
+test('GET / offers an Add to Slack button that links straight to Slack authorize', async () => {
   const body = await (await app.request('/')).text();
   assert.match(body, /Add to Slack/i);
-  assert.match(body, /href="\/auth"/);
+  // The button is a direct install: Slack's authorize endpoint, the app's client
+  // id, an empty bot scope, and the files:write user scope — not the CLI /auth flow.
+  assert.match(body, /href="https:\/\/slack\.example\/oauth\/v2\/authorize\?[^"]*client_id=test-client-id/);
+  assert.match(body, /user_scope=files(:|%3A)write/);
 });
 
 test('GET / shows the npx command that installs the consuming Skill', async () => {

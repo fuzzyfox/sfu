@@ -51,8 +51,9 @@ const SlackMark: FC<{ class?: string }> = ({ class: cls }) => (
  * `origin` is the scheme+host the request arrived on, so absolute links in the
  * Agent snippet point at whatever host served the page.
  */
-export const Home: FC<{ origin: string; plausible?: PlausibleConfig }> = ({
+export const Home: FC<{ origin: string; addToSlackUrl: string; plausible?: PlausibleConfig }> = ({
   origin,
+  addToSlackUrl,
   plausible,
 }) => {
   const snippet = agentSnippet(origin);
@@ -97,7 +98,7 @@ export const Home: FC<{ origin: string; plausible?: PlausibleConfig }> = ({
             </div>
 
             <a
-              href="/auth"
+              href={addToSlackUrl}
               class={`inline-flex items-center gap-2.5 bg-aubergine hover:bg-aubergine-light text-white font-semibold px-6 py-3 rounded-lg shadow-lg shadow-aubergine/30 transition${evt('Add to Slack')}`}
             >
               <SlackMark class="w-5 h-5" /> Add to Slack

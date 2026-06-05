@@ -27,8 +27,25 @@ export function createApp(deps: OAuthDeps, options: AppOptions = {}): Hono {
   // Compiled Tailwind CSS and Alpine.js, emitted into ./public by the build.
   app.get('/public/*', serveStatic({ root: './' }));
 
+  // The landing "Add to Slack" button goes straight to Slack's authorize screen
+  // (a direct install), not the CLI-driven `/auth` flow. Built from config so the
+  // public client id and scope are never hardcoded in a view.
+  const addToSlackUrl = (() => {
+    const u = new URL(deps.authorizeUrl);
+    u.searchParams.set('client_id', deps.clientId);
+    u.searchParams.set('scope', '');
+    u.searchParams.set('user_scope', deps.userScope);
+    return u.toString();
+  })();
+
   app.get('/', (c) =>
-    c.html(<Home origin={new URL(c.req.url).origin} plausible={options.plausible} />),
+    c.html(
+      <Home
+        origin={new URL(c.req.url).origin}
+        addToSlackUrl={addToSlackUrl}
+        plausible={options.plausible}
+      />,
+    ),
   );
   app.get('/llms.txt', (c) => c.text(llmsTxt(new URL(c.req.url).origin)));
 
