@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Home } from './views/home.js';
+import { Privacy, Terms, Support } from './views/legal.js';
 import { llmsTxt } from './content.js';
 import type { PlausibleConfig } from './config.js';
 import { mountOAuthRoutes, type OAuthDeps } from './oauth/routes.js';
@@ -30,6 +31,11 @@ export function createApp(deps: OAuthDeps, options: AppOptions = {}): Hono {
     c.html(<Home origin={new URL(c.req.url).origin} plausible={options.plausible} />),
   );
   app.get('/llms.txt', (c) => c.text(llmsTxt(new URL(c.req.url).origin)));
+
+  // Static legal + support surface (public URLs the Slack Marketplace listing needs).
+  app.get('/privacy', (c) => c.html(<Privacy />));
+  app.get('/terms', (c) => c.html(<Terms />));
+  app.get('/support', (c) => c.html(<Support />));
 
   mountOAuthRoutes(app, deps);
 

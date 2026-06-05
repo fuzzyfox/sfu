@@ -187,7 +187,20 @@ export const Home: FC<{ origin: string; plausible?: PlausibleConfig }> = ({
         </section>
 
         <footer class="text-center text-sm text-slate-400 py-10 border-t border-slate-100">
-          Stateless · stores nothing · requests only <code>files:write</code>
+          <p>
+            Stateless · stores nothing · requests only <code>files:write</code>
+          </p>
+          <nav class="mt-3 flex items-center justify-center gap-4">
+            <a href="/privacy" class="hover:text-slack-red">
+              Privacy
+            </a>
+            <a href="/terms" class="hover:text-slack-red">
+              Terms
+            </a>
+            <a href="/support" class="hover:text-slack-red">
+              Support
+            </a>
+          </nav>
         </footer>
       </div>
     </Layout>

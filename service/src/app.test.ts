@@ -103,6 +103,26 @@ test('GET / carries no Plausible event tags when analytics is unconfigured', asy
   assert.doesNotMatch(body, /plausible-event-name/);
 });
 
+for (const [path, heading] of [
+  ['/privacy', /Privacy Policy/i],
+  ['/terms', /Terms of Service/i],
+  ['/support', /Support/i],
+] as const) {
+  test(`GET ${path} serves an HTML legal/support page (public URL the Marketplace needs)`, async () => {
+    const res = await app.request(path);
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get('content-type') ?? '', /text\/html/);
+    assert.match(await res.text(), heading);
+  });
+}
+
+test('the landing footer links to the privacy, terms, and support pages', async () => {
+  const body = await (await app.request('/')).text();
+  assert.match(body, /href="\/privacy"/);
+  assert.match(body, /href="\/terms"/);
+  assert.match(body, /href="\/support"/);
+});
+
 test('GET /llms.txt is a plain-text doc an Agent can act on from the URL alone', async () => {
   const res = await app.request('http://example.test/llms.txt');
   assert.equal(res.status, 200);

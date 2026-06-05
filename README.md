@@ -82,8 +82,9 @@ and [`docs/adr/`](docs/adr/) for the decisions behind it.
 
 ## Contributing & local development
 
-Both packages build and test green; the OAuth flow and upload are actively being
-built out.
+Both packages build and test green, and the end-to-end Login (OAuth → mint → token
+store) and Upload (direct + handle-only) flows are working. A reference instance is
+live at **<https://sfu.wduyck.me>** ([`/llms.txt`](https://sfu.wduyck.me/llms.txt)).
 
 ```sh
 # Service (TypeScript)

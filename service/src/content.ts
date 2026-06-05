@@ -27,6 +27,19 @@ export const agentSnippet = (origin: string): string =>
   `Go to ${origin} and read ${origin}/llms.txt, then guide me through ` +
   `installing the slack-file-upload skill and uploading a file to Slack as me.`;
 
+/** Source repository — the primary support and issue-tracking channel. */
+export const GITHUB_URL = 'https://github.com/fuzzyfox/sfu';
+
+/**
+ * Support / privacy contact email. Intentionally blank so no address ships without
+ * an Operator choosing one: when empty the legal pages point at GitHub Issues alone.
+ * Set this to the address you want Users — and Slack Marketplace reviewers — to use.
+ */
+export const SUPPORT_EMAIL = '';
+
+/** Date the legal pages (privacy, terms) were last revised, shown on each page. */
+export const LEGAL_LAST_UPDATED = '5 June 2026';
+
 /**
  * The machine-readable `/llms.txt` doc. Given only this URL, an Agent can drive
  * the whole cold-start path: authorize → install the Skill → Upload. Written in
