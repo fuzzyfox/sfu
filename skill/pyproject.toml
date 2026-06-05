@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.scripts]
+slack-login = "slack_file_upload.slack_login:main"
+
 [dependency-groups]
 dev = ["pytest>=8"]
 

@@ -1,6 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { app } from './app.js';
+import { createApp } from './app.js';
+
+// Landing-page behaviour is independent of the OAuth wiring; a stub minter suffices.
+const app = createApp({
+  clientId: 'test-client-id',
+  redirectUri: 'https://sfu.example/callback',
+  authorizeUrl: 'https://slack.example/oauth/v2/authorize',
+  userScope: 'files:write',
+  mintToken: async () => 'xoxp-minted',
+});
 
 test('GET / responds 200 so the running container is demonstrably alive', async () => {
   const res = await app.request('/');
