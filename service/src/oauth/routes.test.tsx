@@ -55,6 +55,20 @@ test('GET /auth rejects a non-loopback return target', async () => {
   assert.equal(res.status, 400);
 });
 
+test('GET /auth with no return (a human clicking Add to Slack) guides them to the CLI', async () => {
+  const app = testApp();
+
+  const res = await app.request('/auth');
+
+  // Not an error and not a redirect to Slack — a human has no loopback Listener,
+  // so we explain the real entry point rather than failing or minting nowhere.
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-type') ?? '', /text\/html/);
+  const body = await res.text();
+  assert.match(body, /npx skills install slack-file-upload/);
+  assert.match(body, /slack-login/);
+});
+
 test('GET /callback Mints the code and Hands back to the loopback Listener', async () => {
   let mintedCode: string | undefined;
   const app = testApp({
