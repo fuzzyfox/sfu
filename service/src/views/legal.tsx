@@ -14,12 +14,13 @@ import { GITHUB_URL, SUPPORT_EMAIL, LEGAL_LAST_UPDATED } from '../content.js';
  */
 
 /** Shared page chrome: a centred prose column with a title and "last updated" line. */
-const LegalPage: FC<PropsWithChildren<{ title: string; updated?: boolean }>> = ({
+const LegalPage: FC<PropsWithChildren<{ title: string; origin?: string; updated?: boolean }>> = ({
   title,
+  origin,
   updated,
   children,
 }) => (
-  <Layout title={`sfu — ${title}`}>
+  <Layout title={`sfu — ${title}`} origin={origin}>
     <main class="mx-auto max-w-2xl px-6 py-16">
       <a href="/" class="text-sm text-slack-red hover:underline">
         ← sfu
@@ -47,8 +48,8 @@ const Contact: FC = () => (
   </p>
 );
 
-export const Privacy: FC = () => (
-  <LegalPage title="Privacy Policy" updated>
+export const Privacy: FC<{ origin?: string }> = ({ origin }) => (
+  <LegalPage title="Privacy Policy" origin={origin} updated>
     <p>
       <strong>sfu</strong> is a stateless service that runs Slack's OAuth flow to mint a personal
       Slack user token and hand it back to your own machine. An accompanying agent skill then uploads
@@ -131,8 +132,8 @@ export const Privacy: FC = () => (
   </LegalPage>
 );
 
-export const Terms: FC = () => (
-  <LegalPage title="Terms of Service" updated>
+export const Terms: FC<{ origin?: string }> = ({ origin }) => (
+  <LegalPage title="Terms of Service" origin={origin} updated>
     <p>
       By using <strong>sfu</strong> (the hosted service and the <code>slack-file-upload</code> skill,
       together the "Service") you agree to these terms. The Service is provided free of charge.
@@ -187,8 +188,8 @@ export const Terms: FC = () => (
   </LegalPage>
 );
 
-export const Support: FC = () => (
-  <LegalPage title="Support">
+export const Support: FC<{ origin?: string }> = ({ origin }) => (
+  <LegalPage title="Support" origin={origin}>
     <p>
       Need help with <strong>sfu</strong>? Here's how to reach us and where to look first.
     </p>

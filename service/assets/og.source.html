@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --aubergine:#4a154b; --aubergineL:#611f69; --red:#e01e5a; --green:#2eb67d;
+    --slate900:#0f172a; --slate700:#334155; --slate400:#94a3b8; --slate200:#e2e8f0; --slate100:#f1f5f9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1200px;height:630px;overflow:hidden;}
+  body{font-family:'Poppins',sans-serif;
+    background:radial-gradient(120% 120% at 80% 0%, #611f69 0%, #4a154b 55%, #3a1040 100%);
+    color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0 80px;position:relative;}
+  .brand{position:absolute;top:42px;left:80px;font-weight:800;font-size:28px;color:#fff;}
+  .agents{position:absolute;top:46px;right:80px;font-size:16px;color:rgba(255,255,255,.55);font-weight:500;}
+  h1{font-size:74px;font-weight:800;line-height:1.05;letter-spacing:-2px;text-align:center;
+    margin-bottom:42px;max-width:1000px;}
+  h1 .red{color:#ff3d72;}
+  /* slack card */
+  .card{background:#fff;border-radius:20px;box-shadow:0 35px 80px -20px rgba(0,0,0,.5);
+    padding:26px 30px;display:flex;align-items:flex-start;gap:16px;width:660px;}
+  .av{width:48px;height:48px;border-radius:10px;background:var(--aubergine);color:#fff;
+    font-weight:700;font-size:17px;display:grid;place-items:center;flex-shrink:0;}
+  .meta{flex:1;}
+  .name{font-weight:800;color:var(--slate900);font-size:20px;}
+  .time{color:var(--slate400);font-size:14px;margin-left:6px;font-weight:500;}
+  .body{color:var(--slate700);font-size:17px;margin-top:1px;}
+  .file{margin-top:10px;display:flex;align-items:center;gap:12px;border:1px solid var(--slate200);
+    border-radius:11px;padding:12px 15px;}
+  .fic{width:40px;height:40px;border-radius:8px;background:#ede9fe;display:grid;place-items:center;font-size:20px;}
+  .fname{font-weight:600;color:#1e293b;font-size:16px;line-height:1.2;}
+  .fmeta{color:var(--slate400);font-size:13px;}
+  .pill{flex-shrink:0;background:#fde7ee;color:var(--red);font-weight:700;font-size:14px;
+    padding:8px 14px;border-radius:999px;}
+  .sub{margin-top:38px;font-family:'JetBrains Mono',monospace;font-size:22px;color:rgba(255,255,255,.85);}
+  .sub .g{color:#46d995;}
+</style>
+</head>
+<body>
+  <div class="brand">sfu</div>
+  <div class="agents">/llms.txt for agents</div>
+  <h1>Upload files to Slack <span class="red">as you.</span></h1>
+  <div class="card">
+    <div class="av">WD</div>
+    <div class="meta">
+      <div><span class="name">William</span><span class="time">10:24 AM</span></div>
+      <div class="body">Here's this week's audio standup 👇</div>
+      <div class="file">
+        <div class="fic">🎵</div>
+        <div><div class="fname">standup-update.mp3</div><div class="fmeta">Audio · 2.3 MB</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sub"><span class="g">$</span> npx skills add fuzzyfox/sfu</div>
+</body>
+</html>

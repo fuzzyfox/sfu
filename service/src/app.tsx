@@ -33,9 +33,9 @@ export function createApp(deps: OAuthDeps, options: AppOptions = {}): Hono {
   app.get('/llms.txt', (c) => c.text(llmsTxt(new URL(c.req.url).origin)));
 
   // Static legal + support surface (public URLs the Slack Marketplace listing needs).
-  app.get('/privacy', (c) => c.html(<Privacy />));
-  app.get('/terms', (c) => c.html(<Terms />));
-  app.get('/support', (c) => c.html(<Support />));
+  app.get('/privacy', (c) => c.html(<Privacy origin={new URL(c.req.url).origin} />));
+  app.get('/terms', (c) => c.html(<Terms origin={new URL(c.req.url).origin} />));
+  app.get('/support', (c) => c.html(<Support origin={new URL(c.req.url).origin} />));
 
   mountOAuthRoutes(app, deps);
 

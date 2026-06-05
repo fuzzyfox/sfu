@@ -41,7 +41,7 @@ export const Home: FC<{ origin: string; plausible?: PlausibleConfig }> = ({
   const evt = (name: string) => (plausible ? ` plausible-event-name=${name.replace(/ /g, '+')}` : '');
 
   return (
-    <Layout plausible={plausible}>
+    <Layout origin={origin} plausible={plausible}>
       <div x-data={copyHelper}>
         <header class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <div class="font-extrabold text-xl">sfu</div>
