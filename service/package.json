@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "build:css": "tailwindcss -i ./src/styles.css -o ./public/style.css --minify",
-    "build:js": "cp node_modules/alpinejs/dist/cdn.min.js public/alpine.js",
+    "build:js": "cp node_modules/alpinejs/dist/cdn.min.js public/alpine.js && cp assets/favicon.svg assets/icon.png public/",
     "build:ts": "tsc -p tsconfig.build.json",
     "build": "npm run build:css && npm run build:js && npm run build:ts",
     "dev:css": "tailwindcss -i ./src/styles.css -o ./public/style.css --watch",

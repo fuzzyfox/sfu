@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#2C2D30"/>
+  <!-- Slack-style four-color marks framing a file -->
+  <g>
+    <rect x="160" y="112" width="192" height="208" rx="18" fill="#3A3B40"/>
+    <rect x="196" y="160" width="120" height="18" rx="9" fill="#E01E5A"/>
+    <rect x="196" y="202" width="120" height="18" rx="9" fill="#ECB22E"/>
+    <rect x="196" y="244" width="78" height="18" rx="9" fill="#2EB67D"/>
+  </g>
+  <!-- send / upload arrow -->
+  <path d="M256 408V330" stroke="#36C5F0" stroke-width="32" stroke-linecap="round"/>
+  <path d="M212 368l44-44 44 44" stroke="#36C5F0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
