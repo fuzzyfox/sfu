@@ -1,7 +1,6 @@
 import type { Context, Hono } from 'hono';
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { Success } from '../views/success.js';
-import { AuthStart } from '../views/authStart.js';
 import { encodeState, decodeState, InvalidState } from './state.js';
 import { isValidReturnUrl } from './returnUrl.js';
 import { resolveClientIp } from '../analytics/clientIp.js';
@@ -63,12 +62,9 @@ export function mountOAuthRoutes(app: Hono, deps: OAuthDeps): void {
   app.get('/auth', (c) => {
     const returnUrl = c.req.query('return');
     const nonce = c.req.query('state');
-    // A human landed here directly (e.g. the "Add to Slack" button): there is no
-    // loopback Listener to Hand a token back to, so guide them to `slack-login`
-    // rather than failing or Minting a token with nowhere to go.
-    if (!returnUrl && !nonce) {
-      return c.html(<AuthStart />);
-    }
+    // Only the CLI (`slack-login`) drives this route, always with a loopback Return
+    // URL and a nonce. A bare hit has no Listener to Hand a token back to, so it is
+    // rejected rather than Minting a token with nowhere to go.
     if (!returnUrl || !nonce || !isValidReturnUrl(returnUrl)) {
       return c.text('Invalid return target', 400);
     }

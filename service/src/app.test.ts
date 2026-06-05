@@ -24,13 +24,10 @@ test('GET / serves an HTML landing page explaining what sfu is', async () => {
   assert.match(body, /Upload files to Slack/i);
 });
 
-test('GET / offers an Add to Slack button that links straight to Slack authorize', async () => {
+test('GET / has no direct authorize button — authorization is CLI-driven', async () => {
   const body = await (await app.request('/')).text();
-  assert.match(body, /Add to Slack/i);
-  // The button is a direct install: Slack's authorize endpoint, the app's client
-  // id, an empty bot scope, and the files:write user scope — not the CLI /auth flow.
-  assert.match(body, /href="https:\/\/slack\.example\/oauth\/v2\/authorize\?[^"]*client_id=test-client-id/);
-  assert.match(body, /user_scope=files(:|%3A)write/);
+  assert.doesNotMatch(body, /Add to Slack/i);
+  assert.doesNotMatch(body, /oauth\/v2\/authorize/);
 });
 
 test('GET / shows the npx command that installs the consuming Skill', async () => {
@@ -94,9 +91,8 @@ const trackedApp = createApp(
   },
 );
 
-test('GET / tags the Add to Slack and copy buttons as Plausible events when configured', async () => {
+test('GET / tags the copy buttons as Plausible events when configured', async () => {
   const body = await (await trackedApp.request('/')).text();
-  assert.match(body, /plausible-event-name=Add\+to\+Slack/);
   assert.match(body, /plausible-event-name=Copy\+Install/);
   assert.match(body, /plausible-event-name=Copy\+Snippet/);
 });

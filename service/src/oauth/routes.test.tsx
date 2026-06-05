@@ -100,18 +100,14 @@ test('GET /auth rejects a non-loopback return target', async () => {
   assert.equal(res.status, 400);
 });
 
-test('GET /auth with no return (a human clicking Add to Slack) guides them to the CLI', async () => {
+test('GET /auth with no return is rejected — only the CLI drives this route', async () => {
   const app = testApp();
 
   const res = await app.request('/auth');
 
-  // Not an error and not a redirect to Slack — a human has no loopback Listener,
-  // so we explain the real entry point rather than failing or minting nowhere.
-  assert.equal(res.status, 200);
-  assert.match(res.headers.get('content-type') ?? '', /text\/html/);
-  const body = await res.text();
-  assert.match(body, /npx skills add fuzzyfox\/sfu/);
-  assert.match(body, /slack-login/);
+  // A bare hit has no loopback Listener to Hand a token back to, so it is refused
+  // rather than minting a token with nowhere to go.
+  assert.equal(res.status, 400);
 });
 
 test('GET /callback Mints the code and Hands back to the loopback Listener', async () => {

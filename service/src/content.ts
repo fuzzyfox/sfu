@@ -66,12 +66,12 @@ a bot. The Service stores nothing and is never in the file's path.
    run Login → Mint → store the token → Upload.
 
 2. If there is no valid token yet, the User performs the only two manual steps —
-   installing the Slack app and Authorizing it. Send the User here to start
-   authorization (the "Add to Slack" button):
+   installing the Slack app and Authorizing it. The Skill's \`slack-login\` utility
+   drives this: it starts a local Listener and opens the Service's authorization
+   URL with that Listener's Return URL —
 
-   ${origin}/auth
+   ${origin}/auth?return=http://localhost:PORT&state=NONCE
 
-   The Skill's \`slack-login\` utility starts a local Listener and opens this URL;
    the Service Mints the token and hands it back to the Listener over loopback.
    The token is written to the Token Store (macOS Keychain, or the
    SLACK_USER_TOKEN environment variable as a fallback).
