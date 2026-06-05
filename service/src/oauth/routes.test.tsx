@@ -65,7 +65,7 @@ test('GET /auth with no return (a human clicking Add to Slack) guides them to th
   assert.equal(res.status, 200);
   assert.match(res.headers.get('content-type') ?? '', /text\/html/);
   const body = await res.text();
-  assert.match(body, /npx skills install slack-file-upload/);
+  assert.match(body, /npx skills add fuzzyfox\/sfu/);
   assert.match(body, /slack-login/);
 });
 

@@ -32,7 +32,7 @@ test('GET / offers an Add to Slack affordance that starts authorization at /auth
 
 test('GET / shows the npx command that installs the consuming Skill', async () => {
   const body = await (await app.request('/')).text();
-  assert.match(body, /npx skills install slack-file-upload/);
+  assert.match(body, /npx skills add fuzzyfox\/sfu/);
 });
 
 test('GET / carries a copy-paste Agent snippet pointing at the site and /llms.txt', async () => {
@@ -53,7 +53,7 @@ test('GET /llms.txt is a plain-text doc an Agent can act on from the URL alone',
   const body = await res.text();
   // The whole cold-start path, machine-readable: authorize, install, upload.
   assert.match(body, /\/auth/); // start authorization
-  assert.match(body, /npx skills install slack-file-upload/); // install the Skill
+  assert.match(body, /npx skills add fuzzyfox\/sfu/); // install the Skill
   assert.match(body, /upload/i); // then perform an Upload
   // Absolute, served-from-this-host links so the Agent can navigate.
   assert.match(body, /http:\/\/example\.test\/auth/);

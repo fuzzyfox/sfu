@@ -11,8 +11,12 @@
 export const TAGLINE =
   'Upload files to Slack as you — the file-upload tool the hosted Slack MCP is missing.';
 
-/** The command that installs the consuming Skill. */
-export const NPX_INSTALL = 'npx skills install slack-file-upload';
+/**
+ * The command that installs the consuming Skill. `skills add <source>` resolves
+ * the GitHub repo and discovers the `slack-file-upload` Skill inside it, so the
+ * source is the repo (fuzzyfox/sfu), not the Skill's directory name.
+ */
+export const NPX_INSTALL = 'npx skills add fuzzyfox/sfu';
 
 /**
  * The copy-paste snippet a User hands to an Agent. It points the Agent at this

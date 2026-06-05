@@ -8,7 +8,7 @@ This directory is the **dev/test workspace**, not the installable Skill itself:
 
 | Path                       | What                                                                         |
 | -------------------------- | ---------------------------------------------------------------------------- |
-| `slack-file-upload/`       | The installable Skill ([agentskills.io](https://agentskills.io) spec): `SKILL.md` + bundled `scripts/`. `npx skills` copies this directory; `name` matches the directory name. |
+| `slack-file-upload/`       | The installable Skill ([agentskills.io](https://agentskills.io) spec): `SKILL.md` + bundled `scripts/`. `npx skills add fuzzyfox/sfu` discovers this directory by its `SKILL.md`; `name` matches the directory name. |
 | `slack-file-upload/scripts/` | The `slack-login` / `slack-upload` wrappers and the stdlib-only `slack_file_upload` package they run — no install needed. |
 | `tests/`                   | The Python test suite (stays outside the Skill so the shipped directory is clean). |
 | `pyproject.toml`           | Dev/test config. The `[project.scripts]` console entry points are a local-dev convenience; agents run the bundled `scripts/…` wrappers. |
