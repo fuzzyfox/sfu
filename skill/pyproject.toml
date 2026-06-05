@@ -8,6 +8,7 @@ dependencies = []
 
 [project.scripts]
 slack-login = "slack_file_upload.slack_login:main"
+slack-upload = "slack_file_upload.slack_upload:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]
