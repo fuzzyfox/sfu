@@ -2,6 +2,9 @@
 node_modules/
 dist/
 
+# Built static assets (Tailwind CSS output + copied Alpine.js)
+service/public/
+
 # Python
 .venv/
 __pycache__/

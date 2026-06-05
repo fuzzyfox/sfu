@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: Poppins, ui-sans-serif, system-ui, sans-serif;
+
+  /* Slack brand palette (https://slack.com/brand-guidelines). */
+  --color-aubergine: #4a154b;
+  --color-aubergine-light: #611f69;
+  --color-slack-blue: #36c5f0;
+  --color-slack-green: #2eb67d;
+  --color-slack-red: #e01e5a;
+  --color-slack-yellow: #ecb22e;
+}
+
+/* Blinking terminal cursor used in the hero install command. */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+[x-cloak] {
+  display: none !important;
+}
