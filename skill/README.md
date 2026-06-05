@@ -2,6 +2,19 @@
 
 Agent skill (Python) that uploads files to Slack as the user.
 
+## Layout
+
+This directory is the **dev/test workspace**, not the installable Skill itself:
+
+| Path                       | What                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| `slack-file-upload/`       | The installable Skill ([agentskills.io](https://agentskills.io) spec): `SKILL.md` + bundled `scripts/`. `npx skills` copies this directory; `name` matches the directory name. |
+| `slack-file-upload/scripts/` | The `slack-login` / `slack-upload` wrappers and the stdlib-only `slack_file_upload` package they run — no install needed. |
+| `tests/`                   | The Python test suite (stays outside the Skill so the shipped directory is clean). |
+| `pyproject.toml`           | Dev/test config. The `[project.scripts]` console entry points are a local-dev convenience; agents run the bundled `scripts/…` wrappers. |
+
+Run the suite with `uv sync && uv run pytest`.
+
 ## Utilities
 
 - **`slack-login`** — runs the end-to-end Login: Authorize the Slack app, Mint a

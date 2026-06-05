@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+"""Bundled entry point for the Login flow — run as ``python3 scripts/slack-login``.
+
+The utilities are a stdlib-only package shipped under this ``scripts/`` directory so
+the Skill installs cleanly via ``npx skills`` with no ``pip install`` step. This thin
+wrapper puts the package on ``sys.path`` and hands off to its ``main`` — the package
+keeps its internal structure (relative imports) without being installed.
+"""
+
+import pathlib
+import sys
+
+if sys.version_info < (3, 11):
+    sys.exit(
+        f"slack-file-upload needs Python 3.11+, but this is {sys.version.split()[0]}. "
+        "Re-run with a newer interpreter, e.g. `python3.11 scripts/slack-login`."
+    )
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+
+from slack_file_upload.slack_login import main  # noqa: E402
+
+if __name__ == "__main__":
+    raise SystemExit(main())
