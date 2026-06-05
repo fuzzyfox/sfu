@@ -11,15 +11,22 @@ export interface Config {
   slackClientId: string;
   /** Slack app client secret, used to Mint the token. Never logged. */
   slackClientSecret: string;
-  /** The registered HTTPS Slack Redirect, e.g. `https://sfu.wduyck.me/callback`. */
+  /** Public HTTPS base URL of this Service, e.g. `https://sfu.wduyck.me`. */
+  baseUrl: string;
+  /**
+   * The registered HTTPS Slack Redirect, derived as `${baseUrl}/callback`. This is
+   * the only redirect URI registered with Slack, so it must match exactly.
+   */
   slackRedirectUri: string;
 }
 
 export function loadConfig(env: Record<string, string | undefined>): Config {
+  const baseUrl = (env.BASE_URL ?? '').replace(/\/+$/, '');
   return {
     port: env.PORT ? Number(env.PORT) : 3000,
     slackClientId: env.SLACK_CLIENT_ID ?? '',
     slackClientSecret: env.SLACK_CLIENT_SECRET ?? '',
-    slackRedirectUri: env.SLACK_REDIRECT_URI ?? '',
+    baseUrl,
+    slackRedirectUri: baseUrl ? `${baseUrl}/callback` : '',
   };
 }
