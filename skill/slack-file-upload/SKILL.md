@@ -1,7 +1,7 @@
 ---
 name: slack-file-upload
 description: Upload a file to Slack as the user — it appears under their name, in the same conversation as their own messages, never as a bot — and get back the file's id and permalink. Fills the gap where the hosted Slack MCP has messaging, canvas, and search but no file-upload tool. Use when you have produced or have a file (an MP3 or other audio, an export, an image, a document, any attachment) that needs to go into Slack as the user; when the user asks to upload, attach, post, or share a file to a Slack channel, DM, or canvas; or when you need a Slack file handle (id + permalink) to embed or reference. Drives the whole cold start from only this Skill — detects an existing token, otherwise guides the user through the one-time Slack app install and authorize, then uploads.
-compatibility: Requires Python 3.11+ and macOS (token stored in the Keychain; the SLACK_USER_TOKEN environment variable is the fallback on non-macOS or headless hosts).
+compatibility: Requires Python 3.9+ (works with the native macOS python3) and macOS (token stored in the Keychain; the SLACK_USER_TOKEN environment variable is the fallback on non-macOS or headless hosts).
 ---
 
 # slack-file-upload

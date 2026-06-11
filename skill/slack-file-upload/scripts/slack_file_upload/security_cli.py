@@ -6,6 +6,8 @@ ACL and never trigger a GUI prompt (ADR-0003). This module is that seam; the
 full Token Store resolution (Keychain-first, env-var fallback) builds on it.
 """
 
+from __future__ import annotations
+
 import subprocess
 
 # `security` exit code for errSecInteractionNotAllowed — a locked Keychain or a

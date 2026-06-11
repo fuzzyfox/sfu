@@ -13,6 +13,7 @@ testable without mocking Slack's wire format; the real transport is integration-
 and covered by manual verification (per the PRD's testing decisions).
 """
 
+from __future__ import annotations
 
 import argparse
 import json

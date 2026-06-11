@@ -49,3 +49,28 @@ jobs:
 
       - run: uv sync
       - run: uv run pytest
+
+  skill-native:
+    name: Skill · native stdlib smoke (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skill/slack-file-upload
+    strategy:
+      fail-fast: false
+      matrix:
+        # The shipped Skill is stdlib-only and must run on the native macOS python3
+        # (3.9). This job imports and runs the bundled wrappers with no `uv sync` /
+        # editable install — pure stdlib — so a regression that reintroduces a 3.11+
+        # dependency into shipped code fails here, not on a user's Mac.
+        python: ['3.9', '3.10']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # Each wrapper imports the whole package, so `--help` exercises every module.
+      - run: python scripts/slack-upload --help
+      - run: python scripts/slack-login --help

@@ -3,7 +3,7 @@ name = "slack-file-upload"
 version = "0.1.0"
 description = "Agent skill that uploads files to Slack as the user via a minted user token"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 dependencies = []
 
 [project.scripts]

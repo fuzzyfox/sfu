@@ -5,6 +5,8 @@ Primary storage is the macOS Keychain, reached by shelling out to `security`
 non-GUI / headless contexts. Resolution on read is Keychain first, then env.
 """
 
+from __future__ import annotations
+
 import os
 
 from . import security_cli
