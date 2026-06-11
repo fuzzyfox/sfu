@@ -11,6 +11,8 @@ verification rather than unit tests asserting against a mock of someone else's A
 dependency just to probe a token.
 """
 
+from __future__ import annotations
+
 import json
 import urllib.request
 from typing import Callable

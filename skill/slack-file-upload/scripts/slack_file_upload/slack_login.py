@@ -13,6 +13,8 @@ Hard constraint (ADR-0002): never log the token or the Handback URL. The token
 travels only in a loopback query string and is handed straight to the Token Store.
 """
 
+from __future__ import annotations
+
 import argparse
 import os
 import secrets

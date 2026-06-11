@@ -10,10 +10,10 @@ keeps its internal structure (relative imports) without being installed.
 import pathlib
 import sys
 
-if sys.version_info < (3, 11):
+if sys.version_info < (3, 9):
     sys.exit(
-        f"slack-file-upload needs Python 3.11+, but this is {sys.version.split()[0]}. "
-        "Re-run with a newer interpreter, e.g. `python3.11 scripts/slack-login`."
+        f"slack-file-upload needs Python 3.9+, but this is {sys.version.split()[0]}. "
+        "Re-run with a newer interpreter, e.g. `python3 scripts/slack-login`."
     )
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
